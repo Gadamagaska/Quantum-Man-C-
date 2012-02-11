@@ -1,0 +1,12 @@
+_ReSharper.Quantum Man
+Quantum Man/Quantum Man/bin
+Quantum Man/Quantum Man/obj
+Quantum Man/Quantum ManContent/obj
+*.dotCover
+*.ReSharper.user
+*.suo
+*.sln.cache
+*.ReSharper
+*.cachefile
+Quantum Man/Quantum Man/StyleCop.Cache
+*.stackdump
