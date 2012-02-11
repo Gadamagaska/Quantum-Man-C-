@@ -38,7 +38,7 @@ namespace Quantum_Man.Screen
             spriteBatch.Begin();
             for (int i = 0; i < screens.Count; i++)
             {
-                if (i == screens.Count - 1 && screens.Count > 1)
+                if (i == screens.Count - 1 && screens.Count > 1 && !screens[i].NoShadow)
                 {
                     spriteBatch.Draw(greyed, GraphicsDevice.Viewport.Bounds, Color.Black);
                 }
@@ -51,7 +51,14 @@ namespace Quantum_Man.Screen
         {
             base.Update(time);
 
-            if (screens.Count > 0) screens[screens.Count - 1].Update(time);
+            if (screens.Count > 0)
+            {
+                for (int i = screens.Count - 1; i >= 0; i-- )
+                {
+                    screens[i].Update(time);
+                    if (screens[i].BlocksUpdate) break;
+                }
+            }
         }
 
         public GameScreen GetTopScreen()

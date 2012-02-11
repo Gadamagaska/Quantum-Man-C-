@@ -6,14 +6,21 @@ namespace Quantum_Man.Screen
 {
     public class GameScreen
     {
+        public ScreenManager ScreenManager { get; private set; }
+        private Collection<Button> Buttons { get; set; }
+
+        // Options
+        public bool BlocksUpdate { get; private set; }
+        public bool NoShadow { get; private set; }
+
         public GameScreen(ScreenManager manager)
         {
             ScreenManager = manager;
             Buttons = new Collection<Button>();
-        }
 
-        public ScreenManager ScreenManager { get; private set; }
-        private Collection<Button> Buttons { get; set; }
+            BlocksUpdate = true;
+            NoShadow = false;
+        }
 
         public virtual void Update(GameTime time)
         {
