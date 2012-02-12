@@ -58,7 +58,8 @@ namespace Quantum_Man.Entities
             {
                 if(line.StartsWith("TILESET"))
                 {
-                    TileSet = new TileSet(content.Load<Texture2D>(line.Split('=')[1]));
+                    string tileSetName = line.Split('=')[1];
+                    TileSet = new TileSet(tileSetName,content);
 
                 }else if(line.StartsWith("LAYER"))
                 {
@@ -70,7 +71,6 @@ namespace Quantum_Man.Entities
                         {
                             case 0: { AddAll(layer, Layer0); break; }
                             case 1: { AddAll(layer, Layer1); break; }
-                            case 2: { AddAll(layer, Layer2); break; }
                         }
                         layer.Clear();
                     }
@@ -80,9 +80,10 @@ namespace Quantum_Man.Entities
 
                 }else if((row = line.Split(',')).Length > 0)
                 {
-                    layer.Add(row.Select(n => int.Parse(n)).ToArray());
+                    layer.Add(row.Select(int.Parse).ToArray());
                 }
             }
+            AddAll(layer, Layer2);
         }
 
         public void Draw(int x, int y, Point destination, GameTime time, SpriteBatch draw)
@@ -100,9 +101,9 @@ namespace Quantum_Man.Entities
 
         public void Draw(int xStart, int width, int yStart, int height, Point origin, GameTime time, SpriteBatch draw)
         {
-            for(int y = yStart; y <= yStart + height; y++)
+            for(int y = yStart; y < yStart + height; y++)
             {
-                for(int x = xStart; x <= xStart + width; x++)
+                for(int x = xStart; x < xStart + width; x++)
                 {
                     this.Draw(x,y, new Point(origin.X + (x-xStart)*TileSize, origin.Y + (y-yStart)*TileSize),time,draw);
                 }
@@ -123,49 +124,47 @@ namespace Quantum_Man.Entities
             return new Point(-1,-1);
         }
 
-        public void MoveCreature(Creature c, Direction dir)
+        public bool MoveCreature(Creature c, Direction dir)
         {
             Point p = GetPosition(c);
+            bool result = false;
             switch(dir)
             {
                 case Direction.Up:
                     {
-                        if(WithinBounds(p.X,p.Y-1))
-                        {
-                            Creatures[p.X, p.Y] = null;
-                            Creatures[p.X, p.Y - 1] = c;
-                        }
+                        result = MoveCreature(p.X,p.Y,p.X,p.Y - 1);
                         break;
                     }
                 case Direction.Down:
                     {
-                        if(WithinBounds(p.X, p.Y + 1))
-                        {
-                            Creatures[p.X, p.Y] = null;
-                            Creatures[p.X, p.Y + 1] = c; 
-                        }
+                        result = MoveCreature(p.X, p.Y, p.X, p.Y + 1);
                         break;
                     }
                 case Direction.Left:
                     {
-                        if(WithinBounds(p.X - 1, p.Y))
-                        {
-                            Creatures[p.X, p.Y] = null;
-                            Creatures[p.X - 1, p.Y] = c;
-                        }
+                        result = MoveCreature(p.X, p.Y, p.X - 1, p.Y);
                         break;
                     }
                 case Direction.Right:
                     {
-                        if(WithinBounds(p.X + 1, p.Y))
-                        {
-                            Creatures[p.X, p.Y] = null;
-                            Creatures[p.X + 1, p.Y] = c;
-                        }
+                        result = MoveCreature(p.X, p.Y, p.X + 1, p.Y);
                         break;
                     }
             }
             c.Face(dir);
+            return result;
+        }
+
+        public bool MoveCreature(int x1, int y1, int x2, int y2)
+        {
+            if(WithinBounds(x2,y2) && Walkable(x2,y2) && Creatures[x2,y2] == null)
+            {
+                Creature c = Creatures[x1, y1];
+                Creatures[x1, y1] = null;
+                Creatures[x2, y2] = c;
+                return true;
+            }
+            return false;
         }
 
         #region private methods
@@ -183,6 +182,16 @@ namespace Quantum_Man.Entities
         {
             if (X >= 0 && X < Width && Y >= 0 && Y < Height) return true;
             return false;
+        }
+
+        private bool Walkable(int x, int y)
+        {
+            return CanWalk(Layer0, x, y) && CanWalk(Layer1, x, y) && CanWalk(Layer2, x, y);
+        }
+
+        private bool CanWalk(int[,] layer, int x, int y)
+        {
+            return TileSet.Walkable(layer[x, y]);
         }
 
         private Point Query<T>(Entity entity, T[,] array) where T : Entity
