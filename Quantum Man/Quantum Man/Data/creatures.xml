@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<root>
+  <Creature name="Sand Monster"
+    tileset="sandmonster"
+    initiative="5"
+    movement="3"
+    health="20"
+    melee="2,5"
+    armor="5">
+    <Ability name="Quick Sand"/>
+  </Creature>
+  <Creature name="Closet Minion"
+            tileset="closetminion"
+            initiative="4"
+            movement="2"
+            health="14"
+            melee="1,2"
+            armor="3">
+    <Ability name="Fireball"/>
+    <Ability name="Regen Mana">
+      <Amount>25</Amount>
+    </Ability>
+  </Creature>
+</root>

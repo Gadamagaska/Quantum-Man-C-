@@ -34,6 +34,8 @@ namespace Quantum_Man.Screen
             mapArea = new Point(14,10);
             GhostChaseDistX = (mapArea.X - 6)/2;
             GhostChaseDistY = (mapArea.Y - 6) / 2;
+
+            Creature.LoadCreature("Sand Monster",manager.Game.Content);
         }
 
         public override void Draw(GameTime time, SpriteBatch draw)

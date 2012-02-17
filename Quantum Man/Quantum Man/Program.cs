@@ -1,4 +1,5 @@
 using System;
+using Quantum_Man.Entities;
 
 namespace Quantum_Man
 {
